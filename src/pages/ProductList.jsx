@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Table, Menu, Icon } from "semantic-ui-react";
+import { useDispatch } from "react-redux";
+import { Table, Menu, Icon, Button } from "semantic-ui-react";
 import ProductService from "../services/productService";
+import { addToCart } from "../store/actions/cartActions";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let productService = new ProductService();
     productService.getProducts().then((res) => setProducts(res.data.data));
   }, []);
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+  };
 
   return (
     <div>
@@ -27,6 +35,9 @@ export default function ProductList() {
               <Table.Cell>{products.productName}</Table.Cell>
               <Table.Cell>{products.unitPrice}</Table.Cell>
               <Table.Cell>{products.unitsInStock}</Table.Cell>
+              <Table.Cell>
+                <Button onClick={() => handleAddToCart(products)}>Ekle</Button>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
